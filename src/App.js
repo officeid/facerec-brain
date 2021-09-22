@@ -8,6 +8,10 @@ import Logo from './components/Logo/Logo';
 import ImageLinkForm from './components/ImageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
 import FaceDetection from './components/FaceDetection/FaceDetection';
+import SignIn from './components/SignIn/SignIn';
+import Register from './components/Register/Register';
+
+
 
 
 const app = new Clarifai.App({
@@ -33,7 +37,9 @@ class App extends React.Component {
     this.state = {
       input:'',
       imgURL:'',
-      box: {}
+      box: {},
+      route: 'signin',
+      isSignedIn : false
     }
   }
 
@@ -70,16 +76,39 @@ class App extends React.Component {
       ).catch(err => console.log(err) );
   }
 
+  onRouteChange = (route) => {
+    if (route==='signout'){
+      this.setState({isSignedIn:false})
+    } else if (route==='home'){
+    this.setState({isSignedIn:true})
+    }
+    this.setState({route: route});
+  }
+
   render(){
+
+    const {isSignedIn, imgURL, route, box} = this.state;
+
     return (
       <div className="App">
+      
         <Particles className="particles"
           params={particlesOptions} />
-        <Navigation></Navigation>
-        <Logo></Logo>
-        <Rank></Rank>
-        <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onSubmit}></ImageLinkForm>
-        <FaceDetection box={this.state.box} imgURL = {this.state.imgURL} ></FaceDetection>
+        <Navigation isSignedIn={isSignedIn}  onRouteChange={this.onRouteChange}></Navigation>
+        { route === 'home' 
+          ? <div>
+              
+              <Logo></Logo>
+              <Rank></Rank>
+              <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onSubmit}></ImageLinkForm>
+              <FaceDetection box={box} imgURL = {imgURL} ></FaceDetection>
+            </div>
+          : (
+              this.state.route === 'signin'
+              ? <SignIn onRouteChange={this.onRouteChange}></SignIn>
+              : <Register onRouteChange={this.onRouteChange}></Register>
+          )
+        }
       </div>
     );
   }
