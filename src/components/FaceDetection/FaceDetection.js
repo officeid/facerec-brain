@@ -2,7 +2,6 @@ import React from 'react';
 import './FaceDetection.css';
 
 const FaceDetection = ({box, imgURL}) => {
-    console.log(box);
     return (
         <div className="center ma">
             <div className="absolute m2">
